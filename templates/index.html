@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+{% block title %}Students · MCA Student Records{% endblock %}
+
+{% block content %}
+<section class="page-head reveal">
+  <div>
+    <span class="eyebrow">MongoDB collection · students</span>
+    <h1>Student records</h1>
+    <p class="muted">Create, read, update and delete MCA student documents — every card opens a full profile.</p>
+  </div>
+  <form class="search" method="get" action="{{ url_for('index') }}" role="search">
+    <input type="search" name="q" value="{{ query }}" placeholder="Search name, roll no, email, city…" aria-label="Search students">
+    <button class="btn btn-primary" type="submit">Search</button>
+    {% if query %}<a class="btn btn-ghost" href="{{ url_for('index') }}">Clear</a>{% endif %}
+  </form>
+</section>
+
+<section class="stats">
+  <div class="stat reveal" style="--i: 1">
+    <span class="stat-label">Total students</span>
+    <span class="stat-value" data-count="{{ summary.total }}">{{ summary.total }}</span>
+  </div>
+  <div class="stat reveal" style="--i: 2">
+    <span class="stat-label">Average marks</span>
+    {% if summary.average is not none %}
+      <span class="stat-value" data-count="{{ summary.average }}" data-decimals="1">{{ "%.1f"|format(summary.average) }}</span>
+    {% else %}
+      <span class="stat-value">—</span>
+    {% endif %}
+  </div>
+  <div class="stat reveal" style="--i: 3">
+    <span class="stat-label">Courses</span>
+    <span class="stat-value" data-count="{{ summary.courses|length }}">{{ summary.courses|length }}</span>
+  </div>
+</section>
+
+{% if students %}
+<section class="student-grid">
+  {% for student in students %}
+  <article class="student-card reveal" id="student-{{ student.id }}" style="--i: {{ loop.index0 + 1 }}">
+    <header class="sc-head">
+      <span class="avatar">{{ student.initials }}</span>
+      <div class="sc-id">
+        <h3>{{ student.name }}</h3>
+        <span class="mono">{{ student.roll_no }}</span>
+      </div>
+      <span class="chip chip-soft">{{ student.course }}</span>
+    </header>
+
+    <dl class="sc-meta">
+      <div><dt>Email</dt><dd>{{ student.email }}</dd></div>
+      <div><dt>Phone</dt><dd>{{ student.phone or "—" }}</dd></div>
+      <div><dt>Location</dt><dd>{{ [student.city, student.state]|select|join(", ") or "—" }}</dd></div>
+      <div><dt>Semester</dt><dd>Sem {{ student.semester }}{% if student.marks is not none %} · {{ "%.1f"|format(student.marks) }} marks{% endif %}</dd></div>
+    </dl>
+
+    <footer class="sc-actions">
+      <a class="btn btn-small btn-primary" href="{{ url_for('profile', student_id=student.id) }}">Profile</a>
+      <a class="btn btn-small" href="{{ url_for('edit_student', student_id=student.id) }}">Edit</a>
+      <form class="inline" method="post" action="{{ url_for('delete_student', student_id=student.id) }}"
+            onsubmit="return confirm('Delete {{ student.name }} ({{ student.roll_no }})? This cannot be undone.');">
+        <button class="btn btn-small btn-danger" type="submit">Delete</button>
+      </form>
+    </footer>
+  </article>
+  {% endfor %}
+</section>
+{% else %}
+<div class="empty reveal">
+  {% if query %}
+    <span class="empty-icon" aria-hidden="true">🔍</span>
+    <h2>No matches for “{{ query }}”</h2>
+    <p class="muted">Try a different name, roll number, city or course.</p>
+    <a class="btn btn-primary" href="{{ url_for('index') }}">Show all students</a>
+  {% else %}
+    <span class="empty-icon" aria-hidden="true">🎓</span>
+    <h2>No students yet</h2>
+    <p class="muted">Add your first MCA student record, or run <code>python seed.py</code> for samples.</p>
+    <a class="btn btn-primary" href="{{ url_for('new_student') }}">Add student</a>
+  {% endif %}
+</div>
+{% endif %}
+{% endblock %}

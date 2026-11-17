@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% block title %}{{ student.name }} · Profile{% endblock %}
+
+{% block content %}
+<section class="page-head reveal" id="profile-top">
+  <a class="back" href="{{ url_for('index') }}"><span aria-hidden="true">←</span> All students</a>
+  <a class="btn btn-ghost" href="{{ url_for('edit_student', student_id=student.id) }}">Edit full record</a>
+</section>
+
+{% if errors %}
+<div class="flash flash-error reveal">Please fix the highlighted fields below.</div>
+{% endif %}
+
+<article class="profile-hero reveal">
+  <span class="avatar avatar-lg">{{ student.initials }}</span>
+  <div class="hero-main">
+    <span class="eyebrow">Student profile</span>
+    <h1>{{ student.name }}</h1>
+    <p class="muted"><span class="mono">{{ student.roll_no }}</span> · {{ student.course }} · Semester {{ student.semester }}</p>
+    <div class="chips">
+      <span class="chip">✉ {{ student.email }}</span>
+      {% if student.phone %}<span class="chip">☎ {{ student.phone }}</span>{% endif %}
+      {% if student.gender %}<span class="chip">{{ student.gender }}</span>{% endif %}
+    </div>
+  </div>
+  <div class="strength">
+    <div class="ring" data-ring="{{ strength }}" role="img" aria-label="Profile {{ strength }}% complete">
+      <span>{{ strength }}%</span>
+    </div>
+    <small>Profile complete</small>
+  </div>
+</article>
+
+<section class="info-grid">
+  <div class="info-card reveal" style="--i: 1">
+    <h2>Personal</h2>
+    <dl class="info-list">
+      <div><dt>Full name</dt><dd>{{ student.name }}</dd></div>
+      <div><dt>Date of birth</dt><dd>{{ student.dob or "Not added" }}</dd></div>
+      <div><dt>Gender</dt><dd>{{ student.gender or "Not added" }}</dd></div>
+      <div><dt>About</dt><dd>{{ student.about or "Not added" }}</dd></div>
+    </dl>
+  </div>
+
+  <div class="info-card reveal" style="--i: 2">
+    <h2>Contact</h2>
+    <dl class="info-list">
+      <div><dt>Email</dt><dd>{{ student.email }}</dd></div>
+      <div><dt>Phone</dt><dd>{{ student.phone or "Not added" }}</dd></div>
+      <div><dt>Guardian</dt><dd>{{ student.guardian_name or "Not added" }}</dd></div>
+      <div><dt>Guardian phone</dt><dd>{{ student.guardian_phone or "Not added" }}</dd></div>
+    </dl>
+  </div>
+
+  <div class="info-card reveal" style="--i: 3">
+    <h2>Address</h2>
+    <dl class="info-list">
+      <div><dt>Street</dt><dd>{{ student.address or "Not added" }}</dd></div>
+      <div><dt>City</dt><dd>{{ student.city or "Not added" }}</dd></div>
+      <div><dt>State</dt><dd>{{ student.state or "Not added" }}</dd></div>
+      <div><dt>PIN code</dt><dd>{{ student.pincode or "Not added" }}</dd></div>
+    </dl>
+  </div>
+
+  <div class="info-card reveal" style="--i: 4">
+    <h2>Academic</h2>
+    <dl class="info-list">
+      <div><dt>Roll number</dt><dd class="mono">{{ student.roll_no }}</dd></div>
+      <div><dt>Course</dt><dd>{{ student.course }}</dd></div>
+      <div><dt>Semester</dt><dd>{{ student.semester }}</dd></div>
+      <div><dt>Marks</dt><dd>{{ "%.1f"|format(student.marks) if student.marks is not none else "Not added" }}</dd></div>
+    </dl>
+  </div>
+</section>
+
+<details class="edit-card reveal" id="edit-profile"{% if errors %} open{% endif %}>
+  <summary>
+    <span class="summary-text">
+      <strong>Update my profile</strong>
+      <small>Name, contact, address, guardian and introduction — saved to MongoDB</small>
+    </span>
+  </summary>
+
+  <form class="profile-form" method="post" action="{{ url_for('update_profile', student_id=student.id) }}" novalidate>
+    <div class="grid">
+      {% include "_profile_fields.html" %}
+    </div>
+    <div class="form-actions">
+      <button class="btn btn-primary" type="submit">Save profile</button>
+      <a class="btn btn-ghost" href="{{ url_for('profile', student_id=student.id) }}">Cancel</a>
+    </div>
+  </form>
+</details>
+{% endblock %}

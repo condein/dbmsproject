@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}{{ "Edit" if student else "Add" }} student · MCA Student Records{% endblock %}
+
+{% block content %}
+<section class="page-head reveal">
+  <div>
+    <span class="eyebrow">{{ "Update document" if student else "New document" }}</span>
+    <h1>{{ "Edit student" if student else "Add student" }}</h1>
+    <p class="muted">
+      {% if student %}Updating <span class="mono">{{ student.roll_no }}</span> in the <code>students</code> collection.{% else %}Creates a new document in the <code>students</code> collection.{% endif %}
+    </p>
+  </div>
+  <a class="btn btn-ghost" href="{{ url_for('index') }}">Back to list</a>
+</section>
+
+{% if errors %}
+<div class="flash flash-error reveal">Please fix the highlighted fields below.</div>
+{% endif %}
+
+<form class="card-form reveal" method="post"
+      action="{{ url_for('update_student', student_id=student.id) if student else url_for('create_student') }}" novalidate>
+  <h2 class="form-section">Academic details</h2>
+  <div class="grid">
+    <label class="field">
+      <span>Roll number <em>*</em></span>
+      <input name="roll_no" value="{{ data.roll_no }}" placeholder="MCA2401" autocomplete="off" required>
+      {% if errors.roll_no %}<small class="error">{{ errors.roll_no }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Course <em>*</em></span>
+      <select name="course" required>
+        {% for course in courses %}
+          <option value="{{ course }}" {% if data.course == course %}selected{% endif %}>{{ course }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.course %}<small class="error">{{ errors.course }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Semester <em>*</em></span>
+      <select name="semester" required>
+        {% for semester in semesters %}
+          <option value="{{ semester }}" {% if data.semester|string == semester|string %}selected{% endif %}>Semester {{ semester }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.semester %}<small class="error">{{ errors.semester }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Marks (0-100)</span>
+      <input name="marks" type="number" min="0" max="100" step="0.1" value="{{ data.marks }}" placeholder="78.5">
+      {% if errors.marks %}<small class="error">{{ errors.marks }}</small>{% endif %}
+    </label>
+  </div>
+
+  <h2 class="form-section">Personal, contact &amp; address</h2>
+  <div class="grid">
+    {% include "_profile_fields.html" %}
+  </div>
+
+  <div class="form-actions">
+    <button class="btn btn-primary" type="submit">{{ "Save changes" if student else "Add student" }}</button>
+    <a class="btn btn-ghost" href="{{ url_for('index') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

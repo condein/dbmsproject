@@ -1,0 +1,76 @@
+    <label class="field">
+      <span>Full name <em>*</em></span>
+      <input name="name" value="{{ data.name }}" placeholder="Aarav Sharma" autocomplete="name" required>
+      {% if errors.name %}<small class="error">{{ errors.name }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Email <em>*</em></span>
+      <input name="email" type="email" value="{{ data.email }}" placeholder="student@college.edu" autocomplete="email" required>
+      {% if errors.email %}<small class="error">{{ errors.email }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Phone</span>
+      <input name="phone" type="tel" inputmode="tel" value="{{ data.phone }}" placeholder="+91 98765 43210" autocomplete="tel">
+      {% if errors.phone %}<small class="error">{{ errors.phone }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Date of birth</span>
+      <input name="dob" type="date" value="{{ data.dob }}" min="1950-01-01" max="{{ today }}">
+      {% if errors.dob %}<small class="error">{{ errors.dob }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Gender</span>
+      <select name="gender">
+        <option value="" {% if not data.gender %}selected{% endif %}>Prefer not to say</option>
+        {% for option in ("Male", "Female", "Other") %}
+          <option value="{{ option }}" {% if data.gender == option %}selected{% endif %}>{{ option }}</option>
+        {% endfor %}
+      </select>
+      {% if errors.gender %}<small class="error">{{ errors.gender }}</small>{% endif %}
+    </label>
+
+    <label class="field field-wide">
+      <span>Address</span>
+      <input name="address" value="{{ data.address }}" placeholder="24, Lake View Road, Andheri East" autocomplete="street-address">
+      {% if errors.address %}<small class="error">{{ errors.address }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>City</span>
+      <input name="city" value="{{ data.city }}" placeholder="Mumbai" autocomplete="address-level2">
+      {% if errors.city %}<small class="error">{{ errors.city }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>State</span>
+      <input name="state" value="{{ data.state }}" placeholder="Maharashtra" autocomplete="address-level1">
+      {% if errors.state %}<small class="error">{{ errors.state }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>PIN code</span>
+      <input name="pincode" inputmode="numeric" value="{{ data.pincode }}" placeholder="400069" autocomplete="postal-code">
+      {% if errors.pincode %}<small class="error">{{ errors.pincode }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Guardian name</span>
+      <input name="guardian_name" value="{{ data.guardian_name }}" placeholder="Rohit Sharma">
+      {% if errors.guardian_name %}<small class="error">{{ errors.guardian_name }}</small>{% endif %}
+    </label>
+
+    <label class="field">
+      <span>Guardian phone</span>
+      <input name="guardian_phone" type="tel" inputmode="tel" value="{{ data.guardian_phone }}" placeholder="+91 98200 11223">
+      {% if errors.guardian_phone %}<small class="error">{{ errors.guardian_phone }}</small>{% endif %}
+    </label>
+
+    <label class="field field-wide">
+      <span>About <small class="hint">({{ data.about|length }}/300)</small></span>
+      <textarea name="about" rows="3" maxlength="300" placeholder="A short introduction — interests, projects, goals.">{{ data.about }}</textarea>
+      {% if errors.about %}<small class="error">{{ errors.about }}</small>{% endif %}
+    </label>

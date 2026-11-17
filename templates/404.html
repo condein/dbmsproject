@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Not found · MCA Student Records{% endblock %}
+
+{% block content %}
+<div class="empty reveal">
+  <span class="empty-icon" aria-hidden="true">🧭</span>
+  <h1>Record not found</h1>
+  <p class="muted">That student may have been deleted, or the link is incorrect.</p>
+  <a class="btn btn-primary" href="{{ url_for('index') }}">Back to students</a>
+</div>
+{% endblock %}
